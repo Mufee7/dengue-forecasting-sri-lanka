@@ -1,0 +1,6 @@
+Model,MAE,RMSE,R2
+Naive Persistence,29.942,57.217,0.748
+Random Forest - Dengue History,30.707,58.607,0.736
+Random Forest - Dengue + Climate,30.344,57.959,0.742
+XGBoost - Dengue History,29.342,54.5,0.772
+XGBoost - Dengue + Climate,28.89,54.054,0.775
