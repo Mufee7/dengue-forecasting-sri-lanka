@@ -212,3 +212,43 @@ dengue-forecasting-sri-lanka/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+```
+
+## Run the demonstration locally
+
+From a terminal:
+
+```sh
+git clone https://github.com/Mufee7/dengue-forecasting-sri-lanka.git
+cd dengue-forecasting-sri-lanka
+python -m venv .venv
+```
+
+Activate the virtual environment:
+
+- Windows PowerShell: `.venv\Scripts\Activate.ps1`
+- macOS/Linux: `source .venv/bin/activate`
+
+Then install dependencies and start the application:
+
+```sh
+python -m pip install -r requirements.txt
+python -m streamlit run app/app.py
+```
+
+Keep the three model artifacts in `models/`; the application loads them relative to the repository root. Enter dengue history and matching weekly climate observations in the interface.
+
+These instructions follow the repository structure and app entry point. A clean installation and prediction run have not yet been verified; compatibility with the pinned dependencies and saved model artifacts needs to be checked.
+
+## Scope and limitations
+
+This is an educational capstone demonstration for five selected districts. It is not an operational public-health forecasting service. Forecast quality outside the evaluated time period and districts has not been established.
+
+The scores above are reported project results. The README update does not independently reproduce the notebook or validate those scores. Climate features produced a modest improvement in the reported comparison; they should not be presented as a large performance gain.
+
+## Further work
+
+- Verify a fresh environment and document the Python version used to train and serve the saved artifacts.
+- Document the complete notebook execution order and source-data retrieval steps.
+- Evaluate additional chronological windows and report performance by district.
+- Add input validation, units, and clearer guidance for the climate observations.
