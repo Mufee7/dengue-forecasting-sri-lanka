@@ -1,0 +1,42 @@
+{
+  "raw_features": [
+    "district",
+    "cases",
+    "cases_lag_1",
+    "cases_lag_2",
+    "cases_lag_4",
+    "week_sin",
+    "week_cos",
+    "rainfall_total",
+    "temperature_mean",
+    "humidity_mean",
+    "rainfall_total_lag_1",
+    "rainfall_total_lag_2",
+    "rainfall_total_lag_4",
+    "rainfall_total_lag_8",
+    "temperature_mean_lag_1",
+    "temperature_mean_lag_2",
+    "temperature_mean_lag_4",
+    "temperature_mean_lag_8",
+    "humidity_mean_lag_1",
+    "humidity_mean_lag_2",
+    "humidity_mean_lag_4",
+    "humidity_mean_lag_8"
+  ],
+  "district_categories": [
+    "Colombo",
+    "Gampaha",
+    "Jaffna",
+    "Kalutara",
+    "Kandy"
+  ],
+  "transformation": "district one-hot first, then numeric raw_features in order",
+  "seasonal_period": 52,
+  "source_artifacts_sha256": {
+    "xgb_climate_model.pkl": "a2b9fad4434e7ec4a34ceb8657c11ac1ce580651c98206bfe4af489d923ab68f",
+    "model_b_features.pkl": "e70d7cbb671920610c15c4d497a72faac1d95870c2435ae1d4e6b92c7a6ec857",
+    "climate_preprocessor.pkl": "64311ffef31f84b928df637fca649af3c6950a722da78a442edf8724c1663b67"
+  },
+  "native_model_sha256": "db6bab6d3e93c79f2aff96fde6625385fb6e87833c80562f08836982e1e69e21",
+  "preprocessing_note": "Recreated from the inspected saved ColumnTransformer: OneHotEncoder(drop=None, sparse_output=False), then remainder=passthrough. No scaling. Legacy objects were not executed."
+}

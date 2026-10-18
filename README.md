@@ -4,6 +4,8 @@ An end-to-end machine learning and time-series forecasting project for predictin
 
 The project compares traditional statistical forecasting methods with machine learning models, evaluates the contribution of climate information, applies SHAP for model interpretation, and provides an interactive Streamlit application for next-week dengue case prediction.
 
+The demonstration starts with a real historical Kandy observation so visitors can try a forecast immediately. It uses a native XGBoost model and an explicit input schema, with validation for missing values, unsupported districts, case counts, rainfall, and humidity. See [local setup](#run-the-demonstration-locally) and [artifact provenance](docs/model-artifacts.md).
+
 ## Project Overview
 
 Dengue remains an important public health concern in Sri Lanka. Accurate short-term forecasting can support awareness, planning, and resource allocation.
@@ -199,9 +201,9 @@ dengue-forecasting-sri-lanka/
 │       └── dengue_forecasting_features.csv
 │
 ├── models/
-│   ├── climate_preprocessor.pkl
-│   ├── model_b_features.pkl
-│   └── xgb_climate_model.pkl
+│   ├── xgb_climate_model.ubj
+│   ├── inference_schema.json
+│   └── ... original .pkl artifacts retained
 │
 ├── results/
 │   ├── figures/
@@ -210,13 +212,17 @@ dengue-forecasting-sri-lanka/
 ├── assets/
 │
 ├── requirements.txt
+├── requirements.lock.txt
+├── scripts/
+├── tests/
+├── docs/
 ├── .gitignore
 └── README.md
 ```
 
 ## Run the demonstration locally
 
-From a terminal:
+Use **Python 3.12**. From a terminal:
 
 ```sh
 git clone https://github.com/Mufee7/dengue-forecasting-sri-lanka.git
@@ -232,23 +238,49 @@ Activate the virtual environment:
 Then install dependencies and start the application:
 
 ```sh
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.lock.txt
+python -m pip check
 python -m streamlit run app/app.py
 ```
 
-Keep the three model artifacts in `models/`; the application loads them relative to the repository root. Enter dengue history and matching weekly climate observations in the interface.
+Open the local URL printed by Streamlit, then select **Predict next week**. The prefilled Kandy example corresponds to 13 December 2025 and has a recorded notebook prediction of **77.44 cases**. It is historical data, not a current forecast. Uncheck the historical-example option to enter a separate observation.
 
-These instructions follow the repository structure and app entry point. A clean installation and prediction run have not yet been verified; compatibility with the pinned dependencies and saved model artifacts needs to be checked.
+Keep `models/xgb_climate_model.ubj`, `models/inference_schema.json`, and the example JSON in `data/demo/`. Paths are resolved from the application files. The original `.pkl` artifacts remain available for provenance but are not loaded by the demo.
+
+`requirements.txt` records direct project dependencies; `requirements.lock.txt` records the resolved demonstration environment. For changes to dependencies, create a fresh environment and rerun the checks before updating the lock file.
+
+### Verify without opening a browser
+
+```sh
+python scripts/smoke_test.py
+python -m unittest discover -s tests -v
+```
+
+The checks compare the historical forecast against the saved notebook output, exercise all supported districts, reject invalid inputs, and submit a prediction through Streamlit's app-testing interface. GitHub Actions repeats the checks on Python 3.12.
+
+### Input units
+
+- Dengue inputs: non-negative, whole reported case counts for the specified weeks.
+- Rainfall: total precipitation in millimetres over each week.
+- Temperature: mean temperature in degrees Celsius over each week.
+- Humidity: mean relative humidity in percent, from 0 to 100.
+- Week: the epidemiological week number used by the original dataset, from 1 to 53. The original seasonal encoding uses a 52-week period.
+
+All historical inputs must refer to the same district and matching weeks. The app validates numerical bounds; it cannot confirm that user-entered observations are authentic or correctly aligned.
+
+### Notebook scope
+
+The committed notebook is the original Colab-oriented research snapshot. It includes absolute Drive paths and precomputed comparison results, and some cells write app files. Running the full notebook locally is not required for the demonstration. Full training reproduction and source-data refresh are not yet provided; see the [verification boundary](docs/model-artifacts.md#verification-boundary).
 
 ## Scope and limitations
 
 This is an educational capstone demonstration for five selected districts. It is not an operational public-health forecasting service. Forecast quality outside the evaluated time period and districts has not been established.
 
-The scores above are reported project results. The README update does not independently reproduce the notebook or validate those scores. Climate features produced a modest improvement in the reported comparison; they should not be presented as a large performance gain.
+The scores above are reported research results. The saved-model smoke tests do not reproduce the full training experiment or independently validate all scores. Climate features produced a modest improvement in the reported comparison.
 
 ## Further work
 
-- Verify a fresh environment and document the Python version used to train and serve the saved artifacts.
-- Document the complete notebook execution order and source-data retrieval steps.
+- Reconstruct and document the complete training pipeline and source-data retrieval steps.
 - Evaluate additional chronological windows and report performance by district.
-- Add input validation, units, and clearer guidance for the climate observations.
+- Add prediction intervals and a clearer account of uncertainty.
+- Verify a hosted deployment and add a public demonstration link.
